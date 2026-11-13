@@ -1,0 +1,18 @@
+const N = 10
+
+PERSON = (deposit[1..N] -> PERSON
+         |withdraw[1..N] -> ...
+         ).
+
+ACCOUNT = ACCOUNT[0],
+ACCOUNT[balance:0..N] = (deposit[amount:1..N] -> ...
+                        |when(balance > 0) ..
+                        ).
+
+//(1) guard balance > 0 is only to avoid empty ranges.
+//    Empty ranges are not allowed by LTSA
+//(2) Do not worry about errors on traces like:
+//      deposit[1] deposit[N]
+//    this is because FSP models can only represent **finite** state systems
+
+||SAVING_ACCOUNT = (a:PERSON || ... || {.. , ...}::ACCOUNT).

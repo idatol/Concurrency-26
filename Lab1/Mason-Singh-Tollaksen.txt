@@ -1,0 +1,56 @@
+/* Homework: LTS & FSP
+*
+* Name: Ida Kallevik
+* Surname: Tollaksen
+*
+* Name: Inderjot
+* Surname: Singh
+*
+* Name: Felix Ricketts
+* Surname: Mason
+*/
+/*Training Exercises*/
+BISTABLE = (trigger -> ONE),
+ONE      = ([1] -> trigger -> ZERO),
+ZERO     = ([0] -> trigger -> ONE).
+
+/* museum */
+const N = 5
+EAST = (arrive -> EAST).
+WEST = (leave -> WEST).
+DIRECTOR = (open -> close -> DIRECTOR).
+CONTROL = CLOSED[0],
+CLOSED[i:0..N] = (when (i==0) open -> OPENED[i+1]
+    |when (i>0) leave -> CLOSED[i-1]
+    ),
+OPENED[i:0..N] = (close -> CLOSED[i]
+    |when (i < N) arrive -> OPENED[i+1]
+    |when (i > 0) leave -> OPENED[i-1]
+    ).
+||MUSEUM = (EAST || WEST || DIRECTOR || CONTROL).
+
+
+/* Time-Out Client Server */
+
+/* (a) */
+CLIENT = (call -> WAIT),
+WAIT   = (answer -> continue -> CLIENT | timeout -> CLIENT).
+
+SERVER = (request -> service -> reply -> SERVER).
+
+||CLIENT_SERVER = (CLIENT || SERVER) /{call/request, answer/reply}.
+
+
+/* (b) */
+/*
+If we trace the call -> service -> timeout (or call -> timeout -> service) it leads to a
+deadlock state with no outgoing transitions. timeout is only in CLIENT, so the client gives up and wants to call again, while the server is stuck waiting to reply.
+*/
+
+/* (c) */
+SERVER2 = (request -> (service -> (reply -> SERVER|timeout -> SERVER)|timeout -> SERVER)).
+
+||CLIENT_SERVER2 = (CLIENT || SERVER2) /{call/request, answer/reply}.
+
+/* write your solution and answer the questions */
+/* end homework */
