@@ -1,3 +1,17 @@
+/* CPDS-Conc Lab 2: FSP Models & Java Programs
+*
+* Name: Ida Kallevik
+* Surname: Tollaksen
+*
+* Name: Inderjot
+* Surname: Singh
+*
+* Name: Felix Ricketts
+* Surname: Mason
+*/
+
+/* Saving Account Problem (M&K 5.6): FSP model */
+
 const N = 10
 
 PERSON = (deposit[1..N] -> PERSON

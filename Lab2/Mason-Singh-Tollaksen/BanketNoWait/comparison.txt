@@ -1,0 +1,14 @@
+/* CPDS-Conc Lab 2: FSP Models & Java Programs
+*
+* Name: Ida Kallevik
+* Surname: Tollaksen
+*
+* Name: Inderjot
+* Surname: Singh
+*
+* Name: Felix Ricketts
+* Surname: Mason
+*/
+
+/* BanketNoWait: comparison between Banket and BanketNoWait */
+
