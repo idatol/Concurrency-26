@@ -1,0 +1,19 @@
+public class Savage extends Thread {
+
+    Pot pot;
+
+    public Savage(Pot pot) {
+        this.pot = ...;
+    }
+
+    public void run() {
+        while (true) {
+            System.out.println(Thread.currentThread().getName() + " is hungry ... ");
+            try {
+                Thread.sleep(200);
+                pot. ...;
+            }
+            catch(InterruptedException e) {};
+        }
+    }
+}
