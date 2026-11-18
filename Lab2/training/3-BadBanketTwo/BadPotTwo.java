@@ -1,34 +1,42 @@
+package BadBanketTwo;
+
 public class BadPotTwo {
+	private int servings = 0;
+	private int capacity;
 
-    private int servings = 0;
-    private int capacity;
+	public BadPotTwo(int capacity) {
+			this.capacity = capacity;
+		}
 
-    public BadPotTwo(int capacity) {
-        ....
-    }
+	public void getserving() throws InterruptedException {
+		// Condition synchronization: at least one serving available,
+		// otherwise, go to the Wait Set til the cook fill the pot
+		if (servings == 0) {
+			System.out.println(Thread.currentThread().getName() + " go walk");
+		}
+		else {
+			Thread.sleep(200);
+			--servings;
+			System.out.println(Thread.currentThread().getName() + " is served");
+			print_servings();
+		}		
+	}
 
-    public void getserving() throws InterruptedException {
-        if (servings == 0) {
-            System.out.println(Thread.currentThread().getName() + " go walk");
-        }
-        else {
-            Thread.sleep(200);
-            --servings;
-            System.out.println(Thread.currentThread().getName() + " is served");
-            print_servings();
-        }
-    }
+	public void fillpot() throws InterruptedException {
+		// Condition synchronization: pot is empty
+		// go to wait set until pot is empty
+		if (servings > 0) {
+			System.out.println(Thread.currentThread().getName() + " has to wait");
+		}
+		else {
+			servings = capacity;
+			System.out.println(Thread.currentThread().getName() + " fills the pot");
+			print_servings();
+		}
+	}
 
-    public void fillpot() throws InterruptedException {
-        if (servings > 0) {
-            ...
-        }
-        else {
-            ...
-        }
-    }
-
-    public synchronized void print_servings() {
-        ...
-    }
+	// only for trace purposes
+	public synchronized void print_servings() {
+		System.out.println("servings in the pot: " + servings);
+	}
 }

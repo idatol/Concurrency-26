@@ -6,8 +6,8 @@
 * Name: Inderjot
 * Surname: Singh
 *
-* Name: Felix Ricketts
-* Surname: Mason
+* Name: Felix 
+* Surname: Ricketts Mason
 */
 
 /* BanketNoWait: comparison between Banket and BanketNoWait */

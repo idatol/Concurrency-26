@@ -6,8 +6,8 @@
 * Name: Inderjot
 * Surname: Singh
 *
-* Name: Felix Ricketts
-* Surname: Mason
+* Name: Felix
+* Surname: Ricketts Mason
 */
 
 /* Saving Account Problem (M&K 5.6): FSP model */
