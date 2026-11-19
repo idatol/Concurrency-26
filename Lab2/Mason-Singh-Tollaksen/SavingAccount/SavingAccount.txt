@@ -14,19 +14,28 @@
 
 const N = 10
 
-PERSON = (deposit[1..N] -> PERSON
-         |withdraw[1..N] -> ...
+PERSON = (deposit[1..N]  -> PERSON
+         |withdraw[1..N] -> PERSON
          ).
 
 ACCOUNT = ACCOUNT[0],
-ACCOUNT[balance:0..N] = (deposit[amount:1..N] -> ...
-                        |when(balance > 0) ..
+ACCOUNT[balance:0..N] = (deposit[amount:1..N] -> ACCOUNT[balance+amount]
+                        |when(balance > 0) withdraw[amount:1..balance] -> ACCOUNT[balance-amount]
                         ).
 
-//(1) guard balance > 0 is only to avoid empty ranges.
-//    Empty ranges are not allowed by LTSA
-//(2) Do not worry about errors on traces like:
-//      deposit[1] deposit[N]
-//    this is because FSP models can only represent **finite** state systems
+// guard balance > 0 is to avoid empty ranges, because LTSA dose not allow them.
 
-||SAVING_ACCOUNT = (a:PERSON || ... || {.. , ...}::ACCOUNT).
+||SAVING_ACCOUNT = (a:PERSON || b:PERSON || {a, b}::ACCOUNT).
+
+/* Notes:
+ * a is Alice and b is Bob. They share one account through {a, b}::ACCOUNT.
+ *
+ * The balance can never go negative because the account only offers
+ * withdraw[1..balance]. If someone tries to withdraw more than the balance,
+ * they are blocked until there is enogh money in the account.
+ *
+ * In the Java program this guard becomes a while loop with wait() in
+ * withdraw(), and deposit() calls notifyAll() so waiting threads can check
+ * the balance again. We also added a company that only deposits, as
+ * suggested in the lab, so Alice and Bob can't get stuck waiting forever.
+ */
