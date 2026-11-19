@@ -1,14 +1,51 @@
-/* CPDS-Conc Lab 2: FSP Models & Java Programs
-*
-* Name: Ida Kallevik
-* Surname: Tollaksen
-*
-* Name: Inderjot
-* Surname: Singh
-*
-* Name: Felix 
-* Surname: Ricketts Mason
-*/
+CPDS-Conc Lab 2 - Homework 1: BanketNoWait
+Group members: Inderjot Singh, Felix Ricketts Mason, Ida Kallevik Tollaksen
 
-/* BanketNoWait: comparison between Banket and BanketNoWait */
+1. How BadPotTwo was repaired
+-----------------------------
+BadPotTwo was broken because getserving() and fillpot() were not
+synchronized: several threads could check "servings == 0" and then
+decrement at the same time (race condition), giving negative servings
+and lost updates. The Thread.sleep(200) between check and update made
+this race very likely.
 
+In BanketNoWait (class PotNoWait) we keep the "try, and if not possible
+go for a walk" idea, but:
+ - getserving() and fillpot() are synchronized, so checking the condition
+   and updating servings is atomic (only one thread inside at a time).
+ - The sleep was removed from inside the pot.
+ - The methods return a boolean (true = done, false = go walk). Savage and
+   Cook retry in a loop, sleeping (walking) between attempts.
+No wait()/notifyAll() is used. With 8 savages the servings always stay
+between 0 and 5.
+
+2. Comparison: Banket vs BanketNoWait
+-------------------------------------
+Banket (monitor with while + wait() + notifyAll()):
+ + A thread that cannot continue sleeps in the wait set and uses no CPU
+   until another thread changes the state and wakes it up.
+ + Threads react immediately: savages are woken exactly when the pot is
+   filled, the cook exactly when it becomes empty.
+ + It is a direct translation of the FSP guards
+   (when (i>0) getserving  ->  while (servings == 0) wait();),
+   which is the approach recommended by Magee & Kramer, Chapter 5.
+
+BanketNoWait (try, if not possible go walk and retry):
+ - Busy waiting: threads repeatedly enter the pot only to find they can
+   do nothing. In our run we saw up to 13 consecutive "go walk" messages
+   while the pot was empty. This wastes CPU and lock usage.
+ - Slower reaction: a walking savage only notices the pot was filled at
+   its next attempt. A short walk wastes more CPU, a long walk adds delay.
+ - No fairness: an unlucky savage may find the pot empty on every try
+   (starvation), because nothing orders the retries.
+ - The "wait until possible" logic is spread over Savage and Cook instead
+   of being inside the monitor.
+ + Simpler: no wait/notify, and a thread never blocks inside the pot.
+
+Conclusion
+----------
+Both versions are correct (servings stay in 0..5). Banket is better: it
+avoids busy waiting, wakes threads exactly when the state changes, keeps
+synchronization inside the monitor and follows the FSP model directly.
+BanketNoWait only makes sense when a thread has other useful work to do
+instead of waiting.
